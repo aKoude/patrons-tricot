@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pattern_sizes",
+  "info": {
+    "singularName": "pattern-size",
+    "pluralName": "pattern-sizes",
+    "displayName": "PatternSize"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sizeName": {
+      "type": "string",
+      "required": true
+    },
+    "measurements": {
+      "type": "json"
+    },
+    "sizeOrder": {
+      "type": "integer",
+      "default": 1
+    },
+    "pattern": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pattern.pattern",
+      "inversedBy": "patternSizes"
+    },
+    "sections": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::section.section",
+      "mappedBy": "patternSize"
+    }
+  }
+}

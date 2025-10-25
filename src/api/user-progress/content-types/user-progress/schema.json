@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_progresses",
+  "info": {
+    "singularName": "user-progress",
+    "pluralName": "user-progresses",
+    "displayName": "UserProgress"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sectionsProgress": {
+      "type": "json",
+      "required": true
+    },
+    "selectedSize": {
+      "type": "json"
+    },
+    "overallProgress": {
+      "type": "decimal",
+      "default": 0
+    },
+    "startedAt": {
+      "type": "datetime"
+    },
+    "lastUpdatedAt": {
+      "type": "datetime"
+    },
+    "isCompleted": {
+      "type": "boolean",
+      "default": false
+    },
+    "completedAt": {
+      "type": "datetime"
+    },
+    "progresses": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pattern.pattern",
+      "inversedBy": "pattern"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "progresses"
+    }
+  }
+}

@@ -430,6 +430,73 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPatternNotePatternNote extends Struct.CollectionTypeSchema {
+  collectionName: 'pattern_notes';
+  info: {
+    displayName: 'PatternNote';
+    pluralName: 'pattern-notes';
+    singularName: 'pattern-note';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-note.pattern-note'
+    > &
+      Schema.Attribute.Private;
+    noteText: Schema.Attribute.Text & Schema.Attribute.Required;
+    pattern: Schema.Attribute.Relation<'manyToOne', 'api::pattern.pattern'>;
+    publishedAt: Schema.Attribute.DateTime;
+    section: Schema.Attribute.Relation<'manyToOne', 'api::section.section'>;
+    step: Schema.Attribute.Relation<'manyToOne', 'api::step.step'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiPatternSizePatternSize extends Struct.CollectionTypeSchema {
+  collectionName: 'pattern_sizes';
+  info: {
+    displayName: 'PatternSize';
+    pluralName: 'pattern-sizes';
+    singularName: 'pattern-size';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-size.pattern-size'
+    > &
+      Schema.Attribute.Private;
+    measurements: Schema.Attribute.JSON;
+    pattern: Schema.Attribute.Relation<'manyToOne', 'api::pattern.pattern'>;
+    publishedAt: Schema.Attribute.DateTime;
+    sections: Schema.Attribute.Relation<'oneToMany', 'api::section.section'>;
+    sizeName: Schema.Attribute.String & Schema.Attribute.Required;
+    sizeOrder: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<1>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPatternPattern extends Struct.CollectionTypeSchema {
   collectionName: 'patterns';
   info: {
@@ -441,42 +508,65 @@ export interface ApiPatternPattern extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    category: Schema.Attribute.Enumeration<['tricot', 'crochet']>;
+    category: Schema.Attribute.Enumeration<['tricot', 'crochet']> &
+      Schema.Attribute.Required;
     coverImage: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    description: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    creditCost: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<1>;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
     difficulty: Schema.Attribute.Enumeration<
       ['d\u00E9butant', 'interm\u00E9diaire', 'avanc\u00E9']
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'d\u00E9butant'>;
     estimatedTime: Schema.Attribute.String;
+    gaugeInfo: Schema.Attribute.JSON;
+    hasGauge: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    hasSizes: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::pattern.pattern'
     > &
       Schema.Attribute.Private;
-    materials: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    materials: Schema.Attribute.RichText & Schema.Attribute.Required;
+    pattern: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-progress.user-progress'
+    >;
+    pattern_notes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-note.pattern-note'
+    >;
+    patternSizes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-size.pattern-size'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     sections: Schema.Attribute.Relation<'oneToMany', 'api::section.section'>;
-    tags: Schema.Attribute.Text & Schema.Attribute.Required;
-    title: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
-    type: Schema.Attribute.String;
+    tags: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    type: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    userAccesses: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-pattern-access.user-pattern-access'
+    >;
   };
 }
 
 export interface ApiSectionSection extends Struct.CollectionTypeSchema {
   collectionName: 'sections';
   info: {
-    displayName: 'section';
+    displayName: 'Section';
     pluralName: 'sections';
     singularName: 'section';
   };
@@ -495,15 +585,18 @@ export interface ApiSectionSection extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     pattern: Schema.Attribute.Relation<'manyToOne', 'api::pattern.pattern'>;
+    pattern_notes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-note.pattern-note'
+    >;
+    patternSize: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::pattern-size.pattern-size'
+    >;
     publishedAt: Schema.Attribute.DateTime;
     sectionNumber: Schema.Attribute.Integer &
       Schema.Attribute.Required &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
+      Schema.Attribute.DefaultTo<1>;
     steps: Schema.Attribute.Relation<'oneToMany', 'api::step.step'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
@@ -526,24 +619,104 @@ export interface ApiStepStep extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    instruction: Schema.Attribute.Blocks & Schema.Attribute.Required;
+    instructions: Schema.Attribute.Text & Schema.Attribute.Required;
+    isRepeatable: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::step.step'> &
       Schema.Attribute.Private;
+    pattern_notes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-note.pattern-note'
+    >;
     publishedAt: Schema.Attribute.DateTime;
-    section: Schema.Attribute.Relation<'manyToOne', 'api::section.section'>;
-    stepNumber: Schema.Attribute.Integer &
+    repeatCount: Schema.Attribute.Integer &
       Schema.Attribute.Required &
-      Schema.Attribute.SetMinMax<
-        {
-          min: 1;
-        },
-        number
-      >;
+      Schema.Attribute.DefaultTo<1>;
+    section: Schema.Attribute.Relation<'manyToOne', 'api::section.section'>;
+    stepNumber: Schema.Attribute.Integer & Schema.Attribute.Required;
+    stitchCount: Schema.Attribute.Integer &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<0>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUserPatternAccessUserPatternAccess
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'user_pattern_accesses';
+  info: {
+    displayName: 'UserPatternAccess';
+    pluralName: 'user-pattern-accesses';
+    singularName: 'user-pattern-access';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    creditsSpent: Schema.Attribute.Integer & Schema.Attribute.Required;
+    isActive: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-pattern-access.user-pattern-access'
+    > &
+      Schema.Attribute.Private;
+    pattern: Schema.Attribute.Relation<'manyToOne', 'api::pattern.pattern'>;
+    publishedAt: Schema.Attribute.DateTime;
+    unlockedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiUserProgressUserProgress
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'user_progresses';
+  info: {
+    displayName: 'UserProgress';
+    pluralName: 'user-progresses';
+    singularName: 'user-progress';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    completedAt: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    isCompleted: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    lastUpdatedAt: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-progress.user-progress'
+    > &
+      Schema.Attribute.Private;
+    overallProgress: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
+    progresses: Schema.Attribute.Relation<'manyToOne', 'api::pattern.pattern'>;
+    publishedAt: Schema.Attribute.DateTime;
+    sectionsProgress: Schema.Attribute.JSON & Schema.Attribute.Required;
+    selectedSize: Schema.Attribute.JSON;
+    startedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -1002,7 +1175,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1011,6 +1183,8 @@ export interface PluginUsersPermissionsUser
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    credits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    creditsRenewDate: Schema.Attribute.DateTime;
     email: Schema.Attribute.Email &
       Schema.Attribute.Required &
       Schema.Attribute.SetMinMaxLength<{
@@ -1022,11 +1196,24 @@ export interface PluginUsersPermissionsUser
       'plugin::users-permissions.user'
     > &
       Schema.Attribute.Private;
+    maxCredits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<10>;
     password: Schema.Attribute.Password &
       Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
         minLength: 6;
       }>;
+    pattern_notes: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::pattern-note.pattern-note'
+    >;
+    patternAccesses: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-pattern-access.user-pattern-access'
+    >;
+    progresses: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-progress.user-progress'
+    >;
     provider: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     resetPasswordToken: Schema.Attribute.String & Schema.Attribute.Private;
@@ -1034,6 +1221,16 @@ export interface PluginUsersPermissionsUser
       'manyToOne',
       'plugin::users-permissions.role'
     >;
+    stripeCustomerId: Schema.Attribute.String;
+    stripeSubscriptionId: Schema.Attribute.String;
+    subscriptionPlan: Schema.Attribute.Enumeration<
+      ['free', 'basic', 'premium']
+    > &
+      Schema.Attribute.DefaultTo<'free'>;
+    subscriptionStatus: Schema.Attribute.Enumeration<
+      ['inactive', 'active', 'cancelled', 'trial']
+    > &
+      Schema.Attribute.DefaultTo<'inactive'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1057,9 +1254,13 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::pattern-note.pattern-note': ApiPatternNotePatternNote;
+      'api::pattern-size.pattern-size': ApiPatternSizePatternSize;
       'api::pattern.pattern': ApiPatternPattern;
       'api::section.section': ApiSectionSection;
       'api::step.step': ApiStepStep;
+      'api::user-pattern-access.user-pattern-access': ApiUserPatternAccessUserPatternAccess;
+      'api::user-progress.user-progress': ApiUserProgressUserProgress;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -13,22 +13,51 @@
     "attributes": {
         "stepNumber": {
             "type": "integer",
-            "required": true,
-            "min": 1
+            "required": true
         },
         "title": {
             "type": "string",
             "required": true
         },
-        "instruction": {
-            "type": "blocks",
+        "instructions": {
+            "type": "text",
             "required": true
+        },
+        "stitchCount": {
+            "type": "integer",
+            "required": true,
+            "default": 0
+        },
+        "isRepeatable": {
+            "type": "boolean",
+            "default": false
+        },
+        "repeatCount": {
+            "type": "integer",
+            "conditions": {
+                "visible": {
+                    "==": [
+                        {
+                            "var": "isRepeatable"
+                        },
+                        true
+                    ]
+                }
+            },
+            "required": true,
+            "default": 1
         },
         "section": {
             "type": "relation",
             "relation": "manyToOne",
             "target": "api::section.section",
             "inversedBy": "steps"
+        },
+        "pattern_notes": {
+            "type": "relation",
+            "relation": "oneToMany",
+            "target": "api::pattern-note.pattern-note",
+            "mappedBy": "step"
         }
     }
 }

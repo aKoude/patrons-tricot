@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pattern_notes",
+  "info": {
+    "singularName": "pattern-note",
+    "pluralName": "pattern-notes",
+    "displayName": "PatternNote"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "noteText": {
+      "type": "text",
+      "required": true
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "pattern_notes"
+    },
+    "pattern": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pattern.pattern",
+      "inversedBy": "pattern_notes"
+    },
+    "section": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::section.section",
+      "inversedBy": "pattern_notes"
+    },
+    "step": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::step.step",
+      "inversedBy": "pattern_notes"
+    }
+  }
+}

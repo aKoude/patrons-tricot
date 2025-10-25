@@ -13,11 +13,10 @@
   "attributes": {
     "title": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "description": {
-      "type": "blocks",
+      "type": "text",
       "required": true
     },
     "difficulty": {
@@ -32,13 +31,15 @@
     },
     "category": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "tricot",
         "crochet"
       ]
     },
     "type": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "coverImage": {
       "type": "media",
@@ -49,21 +50,72 @@
       ]
     },
     "estimatedTime": {
-      "type": "string",
-      "required": false
+      "type": "string"
     },
     "materials": {
-      "type": "blocks",
+      "type": "richtext",
       "required": true
     },
     "tags": {
-      "type": "text",
-      "required": true
+      "type": "string",
+      "required": false
+    },
+    "creditCost": {
+      "type": "integer",
+      "required": true,
+      "default": 1
+    },
+    "hasSizes": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "hasGauge": {
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    "gaugeInfo": {
+      "type": "json",
+      "conditions": {
+        "visible": {
+          "==": [
+            {
+              "var": "hasGauge"
+            },
+            true
+          ]
+        }
+      }
+    },
+    "patternSizes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pattern-size.pattern-size",
+      "mappedBy": "pattern"
     },
     "sections": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::section.section",
+      "mappedBy": "pattern"
+    },
+    "userAccesses": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-pattern-access.user-pattern-access",
+      "mappedBy": "pattern"
+    },
+    "pattern": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::user-progress.user-progress",
+      "mappedBy": "progresses"
+    },
+    "pattern_notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pattern-note.pattern-note",
       "mappedBy": "pattern"
     }
   }

@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "user_pattern_accesses",
+  "info": {
+    "singularName": "user-pattern-access",
+    "pluralName": "user-pattern-accesses",
+    "displayName": "UserPatternAccess"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "creditsSpent": {
+      "type": "integer",
+      "required": true
+    },
+    "unlockedAt": {
+      "type": "datetime"
+    },
+    "isActive": {
+      "type": "boolean",
+      "required": false,
+      "default": true
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "patternAccesses"
+    },
+    "pattern": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pattern.pattern",
+      "inversedBy": "userAccesses"
+    }
+  }
+}

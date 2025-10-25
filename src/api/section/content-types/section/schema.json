@@ -4,7 +4,7 @@
   "info": {
     "singularName": "section",
     "pluralName": "sections",
-    "displayName": "section"
+    "displayName": "Section"
   },
   "options": {
     "draftAndPublish": true
@@ -18,10 +18,11 @@
     "sectionNumber": {
       "type": "integer",
       "required": true,
-      "min": 1
+      "default": 1
     },
     "description": {
-      "type": "text"
+      "type": "text",
+      "required": false
     },
     "pattern": {
       "type": "relation",
@@ -29,10 +30,22 @@
       "target": "api::pattern.pattern",
       "inversedBy": "sections"
     },
+    "patternSize": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::pattern-size.pattern-size",
+      "inversedBy": "sections"
+    },
     "steps": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::step.step",
+      "mappedBy": "section"
+    },
+    "pattern_notes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pattern-note.pattern-note",
       "mappedBy": "section"
     }
   }
